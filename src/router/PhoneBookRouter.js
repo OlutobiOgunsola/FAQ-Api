@@ -1,26 +1,30 @@
-"use strict";
+'use strict';
 
 const {Router} = require('express');
 const PhoneBookController = require('../controllers/PhoneBookController');
 
 /**
- * @type PhoneBookRouter
+ * PhoneBookRouter Class
  * @kind class
  * @extends PhoneBookController
  * @return {Router}
  */
 class PhoneBookRouter extends PhoneBookController {
-    constructor() {
-        super();
+  /**
+   * constructor
+   * @return {Router}
+   */
+  constructor() {
+    super();
 
-        return Router()
-            .get('/contacts', this.getContacts.bind(this))
-            .post('/contacts', this.createContact.bind(this))
-            .get('/contacts/:id', this.getContactById.bind(this))
-            .put('/contacts/:id', this.editContact.bind(this))
-            .delete('/contacts/:id', this.deleteContact.bind(this))
-            .get('/search/:keyword', this.searchContacts.bind(this));
-    }
+    return Router()
+        .get('/contacts', this.getContacts)
+        .post('/contacts', this.createContact)
+        .get('/contacts/:id', this.getContactById)
+        .put('/contacts/:id', this.editContact)
+        .delete('/contacts/:id', this.deleteContact)
+        .get('/search/:keyword', this.searchContacts);
+  }
 }
 
 module.exports = PhoneBookRouter;

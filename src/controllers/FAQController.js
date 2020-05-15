@@ -2,6 +2,7 @@
 
 const FAQModel = require('../models/FAQModel');
 const Answer = require('../models/AnswerModel');
+const Comment = require('../models/CommentModel');
 const Question = require('../models/QuestionModel');
 
 /** Initialize FAQ Controller
@@ -17,6 +18,10 @@ const Question = require('../models/QuestionModel');
 // Add rating to question
 // Add rating to answer
 // Add comments to answer
+// Add comments to comments
+// Delete question
+// Delete answer
+// Delete comment
 
 class FAQController extends FAQModel {
   constructor() {
@@ -89,7 +94,7 @@ class FAQController extends FAQModel {
 
       this.insert(question.mapToModel())
         .then(inserted => {
-          res.status(200).json({
+          res.status(201).json({
             success: true,
             data: inserted,
           });
@@ -124,6 +129,35 @@ class FAQController extends FAQModel {
           });
         })
         .catch(next);
+    };
+
+    /** Delete answer to questoin
+     *  @param {Object} req - the request object
+     *  @param {Object} res - the response object
+     *  @param {Object} next- the next middleware in stack
+     *  @returns {Object} Questions - the questions by category
+     */
+    this.deleteAnswer = (req, res, next) => {
+      const { answerid, id } = req.params;
+      const { comment } = req.body;
+      const commentString = new Comment(comment, answerid);
+      this.find(['question_id'], id).then(question => {
+        const foundQuestion = question[0];
+        const newAnswers = foundQuestion.answers.filter(answer => {
+          return answer.id !== answerid;
+        });
+
+        const questionID = foundQuestion.id;
+
+        foundQuestion.answers = newAnswers;
+        // foundAnswer[0].comments = [];
+        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
+          res.status(200).json({
+            success: true,
+            data: updatedQuestion,
+          });
+        });
+      });
     };
 
     /** Get Answer by ID
@@ -162,7 +196,7 @@ class FAQController extends FAQModel {
           let questionID;
           let foundQuestion = question[0];
           questionID = foundQuestion.id;
-          foundQuestion.ratings.push(rating);
+          foundQuestion.ratings.push(Number.parseInt(rating));
 
           this.updateById(questionID, foundQuestion).then(response => {
             res.status(200).json({
@@ -172,6 +206,126 @@ class FAQController extends FAQModel {
           });
         })
         .catch(next);
+    };
+
+    /** Add rating to answer
+     *  @param {Object} req - the request object
+     *  @param {Object} res - the response object
+     *  @param {Object} next- the next middleware in stack
+     *  @returns {Object} Questions - the questions by category
+     */
+    this.addAnswerRating = (req, res, next) => {
+      const { answerid, id } = req.params;
+      const { rating } = req.body;
+      this.find(['question_id'], id).then(question => {
+        const foundQuestion = question[0];
+        const foundAnswer = foundQuestion.answers.filter(answer => {
+          return answer.id === answerid;
+        });
+
+        const questionID = foundQuestion.id;
+
+        foundAnswer[0].ratings.push(Number.parseInt(rating));
+        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
+          res.status(200).json({
+            success: true,
+            data: updatedQuestion,
+          });
+        });
+      });
+    };
+
+    /** Add comments to answer
+     *  @param {Object} req - the request object
+     *  @param {Object} res - the response object
+     *  @param {Object} next- the next middleware in stack
+     *  @returns {Object} Questions - the questions by category
+     */
+    this.addAnswerComments = (req, res, next) => {
+      const { answerid, id } = req.params;
+      const { comment } = req.body;
+      const commentString = new Comment(comment, answerid);
+      this.find(['question_id'], id).then(question => {
+        const foundQuestion = question[0];
+        const foundAnswer = foundQuestion.answers.filter(answer => {
+          return answer.id === answerid;
+        });
+
+        const questionID = foundQuestion.id;
+
+        foundAnswer[0].comments.push(commentString.mapToModel());
+        // foundAnswer[0].comments = [];
+        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
+          res.status(200).json({
+            success: true,
+            data: updatedQuestion,
+          });
+        });
+      });
+    };
+
+    /** Add comments to comment
+     *  @param {Object} req - the request object
+     *  @param {Object} res - the response object
+     *  @param {Object} next- the next middleware in stack
+     *  @returns {Object} Questions - the questions by category
+     */
+    this.addCommentComments = (req, res, next) => {
+      const { commentid, answerid, id } = req.params;
+      const { comment } = req.body;
+      const commentString = new Comment(comment, answerid);
+      this.find(['question_id'], id).then(question => {
+        const foundQuestion = question[0];
+        const foundAnswer = foundQuestion.answers.filter(answer => {
+          return answer.id === answerid;
+        });
+        const foundComment = foundAnswer[0].comments.filter(comment => {
+          return comment.id === commentid;
+        });
+
+        const questionID = foundQuestion.id;
+
+        foundComment[0].comments.push(commentString.mapToModel());
+        // foundAnswer[0].comments = [];
+        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
+          res.status(200).json({
+            success: true,
+            data: updatedQuestion,
+          });
+        });
+      });
+    };
+
+    /** Delete comment
+     *  @param {Object} req - the request object
+     *  @param {Object} res - the response object
+     *  @param {Object} next- the next middleware in stack
+     *  @returns {Object} Questions - the questions by category
+     */
+    this.deleteComments = (req, res, next) => {
+      const { commentid, answerid, id } = req.params;
+      const { comment } = req.body;
+      const commentString = new Comment(comment, answerid);
+      this.find(['question_id'], id).then(question => {
+        const foundQuestion = question[0];
+        const foundAnswer = foundQuestion.answers.filter(answer => {
+          return answer.id === answerid;
+        });
+        const newComments = foundAnswer[0].comments.filter(comment => {
+          return comment.id !== commentid;
+        });
+
+        const questionID = foundQuestion.id;
+
+        foundAnswer[0].comments = newComments;
+        // foundAnswer[0].comments = [];
+        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
+          res.status(200).json({
+            success: true,
+            data: updatedQuestion,
+          });
+        });
+      });
     };
   }
 }

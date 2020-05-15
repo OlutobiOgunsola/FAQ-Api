@@ -3,7 +3,7 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const PhoneBookRouter = require('./router/PhoneBookRouter');
+const AppRouter = require('./router/FAQRouter');
 
 // Initializing the express application instance
 const app = express();
@@ -13,7 +13,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 
 // Implement PhoneBook router middleware
-app.use('/phonebook', new PhoneBookRouter());
+app.use('/FAQ', new AppRouter());
+
+//Implement home route
+app.use('/', (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    message: 'You have hit home route',
+  });
+});
 
 // Error 404 Handler middleware
 app.use((req, res, next) => {

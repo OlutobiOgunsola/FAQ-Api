@@ -5,14 +5,15 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "test": "jest --watch"
   },
   "author": {
-    "url": "https://github.com/factman",
-    "email": "factman60@gmail.com",
-    "name": "Mohammed Odunayo"
+    "url": "https://github.com/olutobiogunsola",
+    "email": "olutobiogunsola@gmail.com",
+    "name": "Olutobi Ogunsola"
   },
-  "description": "A simple MVC REST API architecture with a JSON Database model",
+  "description": "A simple MVC REST API for a products FAQ's service. Built on top of @factmans JSON Database",
   "engineStrict": true,
   "keywords": [
     "API",
@@ -20,13 +21,16 @@
     "MVC"
   ],
   "dependencies": {
-    "express": "~4.17.1",
     "body-parser": "~1.19.0",
-    "morgan": "~1.10.0"
+    "express": "~4.17.1",
+    "morgan": "~1.10.0",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "eslint": "^7.0.0",
     "eslint-config-google": "^0.14.0",
+    "jest": "^26.0.1",
+    "mocha": "^7.1.2",
     "nodemon": "~2.0.3"
   }
 }

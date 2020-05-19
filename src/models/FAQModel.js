@@ -16,6 +16,7 @@ const QuestionSchema = {
  */
 
 module.exports = class FAQModel extends JSONDB {
+  /** Call constructor */
   constructor() {
     super('FAQModel', QuestionSchema);
   }

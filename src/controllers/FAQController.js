@@ -1,14 +1,9 @@
 'use strict';
 
 const FAQModel = require('../models/FAQModel');
-const Answer = require('../models/AnswerModel');
-const Comment = require('../models/CommentModel');
+// const Answer = require('../models/AnswerModel');
+// const Comment = require('../models/CommentModel');
 const Question = require('../models/QuestionModel');
-
-/** Initialize FAQ Controller
- *  @kind class
- *  @extends FAQModel
- */
 
 // Get all questions
 // Get questions by category
@@ -22,6 +17,11 @@ const Question = require('../models/QuestionModel');
 // Delete question
 // Delete answer
 // Delete comment
+
+/** Initialize FAQ Controller
+ *  @kind class
+ *  @extends FAQModel
+ */
 
 class FAQController extends FAQModel {
   constructor() {
@@ -91,6 +91,7 @@ class FAQController extends FAQModel {
      */
     this.addQuestion = (req, res, next) => {
       const question = new Question(req.body.question, req.body.categories);
+      console.log('New Question received');
 
       this.insert(question.mapToModel())
         .then(inserted => {
@@ -100,84 +101,6 @@ class FAQController extends FAQModel {
           });
         })
         .catch(next);
-    };
-
-    /** Post an answer to question
-     *  @param {Object} req - the request object
-     *  @param {Object} res - the response object
-     *  @param {Object} next- the next middleware in stack
-     *  @returns {Object} Questions - the question with answer included in array
-     */
-
-    this.postAnswer = (req, res, next) => {
-      const parentID = req.params.id;
-      const answer = new Answer(req.body.answer, parentID);
-
-      //get parent question Object
-      this.find(['question_id'], parentID)
-        .then(question => {
-          let questionID;
-          let foundQuestion = question[0];
-          questionID = foundQuestion.id;
-          foundQuestion.answers.push(answer.mapToModel());
-
-          this.updateById(questionID, foundQuestion).then(response => {
-            res.status(200).json({
-              success: true,
-              data: response,
-            });
-          });
-        })
-        .catch(next);
-    };
-
-    /** Delete answer to questoin
-     *  @param {Object} req - the request object
-     *  @param {Object} res - the response object
-     *  @param {Object} next- the next middleware in stack
-     *  @returns {Object} Questions - the questions by category
-     */
-    this.deleteAnswer = (req, res, next) => {
-      const { answerid, id } = req.params;
-      const { comment } = req.body;
-      const commentString = new Comment(comment, answerid);
-      this.find(['question_id'], id).then(question => {
-        const foundQuestion = question[0];
-        const newAnswers = foundQuestion.answers.filter(answer => {
-          return answer.id !== answerid;
-        });
-
-        const questionID = foundQuestion.id;
-
-        foundQuestion.answers = newAnswers;
-        // foundAnswer[0].comments = [];
-        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
-          res.status(200).json({
-            success: true,
-            data: updatedQuestion,
-          });
-        });
-      });
-    };
-
-    /** Get Answer by ID
-     *  @param {Object} req - the request object
-     *  @param {Object} res - the response object
-     *  @param {Object} next- the next middleware in stack
-     *  @returns {Object} Questions - the questions by category
-     */
-    this.getAnswerById = (req, res, next) => {
-      const { answerid, id } = req.params;
-      this.find(['question_id'], id).then(question => {
-        const foundAnswer = question[0].answers.filter(answer => {
-          return answer.id === answerid;
-        });
-
-        res.status(200).json({
-          success: true,
-          data: foundAnswer,
-        });
-      });
     };
 
     /** Add Question rating
@@ -206,62 +129,6 @@ class FAQController extends FAQModel {
           });
         })
         .catch(next);
-    };
-
-    /** Add rating to answer
-     *  @param {Object} req - the request object
-     *  @param {Object} res - the response object
-     *  @param {Object} next- the next middleware in stack
-     *  @returns {Object} Questions - the questions by category
-     */
-    this.addAnswerRating = (req, res, next) => {
-      const { answerid, id } = req.params;
-      const { rating } = req.body;
-      this.find(['question_id'], id).then(question => {
-        const foundQuestion = question[0];
-        const foundAnswer = foundQuestion.answers.filter(answer => {
-          return answer.id === answerid;
-        });
-
-        const questionID = foundQuestion.id;
-
-        foundAnswer[0].ratings.push(Number.parseInt(rating));
-        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
-          res.status(200).json({
-            success: true,
-            data: updatedQuestion,
-          });
-        });
-      });
-    };
-
-    /** Add comments to answer
-     *  @param {Object} req - the request object
-     *  @param {Object} res - the response object
-     *  @param {Object} next- the next middleware in stack
-     *  @returns {Object} Questions - the questions by category
-     */
-    this.addAnswerComments = (req, res, next) => {
-      const { answerid, id } = req.params;
-      const { comment } = req.body;
-      const commentString = new Comment(comment, answerid);
-      this.find(['question_id'], id).then(question => {
-        const foundQuestion = question[0];
-        const foundAnswer = foundQuestion.answers.filter(answer => {
-          return answer.id === answerid;
-        });
-
-        const questionID = foundQuestion.id;
-
-        foundAnswer[0].comments.push(commentString.mapToModel());
-        // foundAnswer[0].comments = [];
-        this.updateById(questionID, foundQuestion).then(updatedQuestion => {
-          res.status(200).json({
-            success: true,
-            data: updatedQuestion,
-          });
-        });
-      });
     };
 
     /** Add comments to comment

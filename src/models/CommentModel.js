@@ -1,4 +1,9 @@
-const Answer = require('./AnswerModel');
+const { uuidv4 } = require('uuid');
+
+/** Define class comment
+ *  @kind class
+ *  @returns {Object} comment
+ */
 
 module.exports = class Comments extends Answer {
   constructor(answer, parentQuestionID) {

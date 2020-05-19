@@ -3,7 +3,8 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const AppRouter = require('./router/FAQRouter');
+const QuestionRouter = require('./router/FAQRouter');
+const AnswerRouter = require('./router/AnswerRouter');
 
 // Initializing the express application instance
 const app = express();
@@ -13,7 +14,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 
 // Implement PhoneBook router middleware
-app.use('/FAQ', new AppRouter());
+app.use('/FAQ', new QuestionRouter());
+app.use('/FAQ', new AnswerRouter());
 
 //Implement home route
 app.use('/', (req, res, next) => {

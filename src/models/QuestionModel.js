@@ -51,58 +51,6 @@ class Question {
     return this._categories.push(category);
   }
 
-  //   getAverageRating() {
-  //     let sum = 0;
-  //     this._ratings.forEach(rating => (sum += rating));
-  //     return (sum / this._ratings.length).toFixed(1);
-  //   }
-
-  //   addRating(rating) {
-  //     this.rating = rating;
-  //   }
-
-  //   addAnswer(answer) {
-  //     if (typeof answer === 'object' && !Array.isArray(answer) && answer !== null && answer.id && answer.answer) {
-  //       this.answers = answer;
-  //     }
-  //   }
-
-  //   removeAnswer(id) {
-  //     const newAnswers = this.answers.filter(anse => {
-  //       return anse.id != id;
-  //     });
-  //     this._answers = newAnswers;
-  //   }
-
-  //   addCategory(category) {
-  //     this.categories = category.toString().trim();
-  //   }
-
-  //   removeCategory(category) {
-  //     if (this.categories.indexOf(category.toString().trim()) > -1) {
-  //       const newCategories = this.categories.filter(cate => {
-  //         return cate != category;
-  //       });
-  //       this._categories = newCategories;
-  //       console.log(this.categories);
-  //     }
-  //     return this.categories;
-  //   }
-
-  //   getId() {
-  //     return this.id;
-  //   }
-
-//   present() {
-//     return {
-//       id: this.id,
-//       question: this.question,
-//       answers: this.answers,
-//       categories: this.categories,
-//       rating: this.getAverageRating(),
-//     };
-//   }
-
   mapToModel() {
     return {
       question_id: this.id,
